@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información de tu Sistema - WebUser Avanzado</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Variables y Estilos Base */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            --text-color: #fff;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --header-bg: rgba(0, 0, 0, 0.3);
+            --highlight-color: #fdbb2d;
+            --button-color: #1a2a6c;
+            --button-hover: #ffcc44;
+            --danger-color: #d9534f; /* Nuevo color para botones de acción destructiva */
+        }
+
+        /* Tema Oscuro Alternativo */
+        .dark-mode {
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --text-color: #f0f0f0;
+            --card-bg: rgba(0, 0, 0, 0.3);
+            --header-bg: rgba(0, 0, 0, 0.5);
+            --highlight-color: #f0f0f0;
+            --button-color: #0f0c29;
+            --danger-color: #ff6f69;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.5s ease;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: var(--header-bg);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .info-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .specs-card, .summary-card, .search-card, .sensors-card, .camera-card, .browser-controls-card {
+            flex: 1;
+            min-width: 300px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .camera-card {
+            min-width: 100%;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--highlight-color);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+        
+        .specs-text, .sensor-text {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .summary-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .summary-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .icon-container {
+            font-size: 5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        #browser-icon {
+            font-size: 3rem;
+            width: 70px;
+            height: 70px;
+        }
+        
+        .summary-text {
+            flex: 1;
+        }
+        
+        .summary-text p {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .search-box {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+        
+        button, .advanced-btn {
+            background: var(--highlight-color);
+            color: var(--button-color);
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .advanced-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Estilo específico para el botón de cerrar página (peligro) */
+        .advanced-btn.danger {
+            background-color: var(--danger-color);
+            color: var(--text-color);
+        }
+        
+        button:hover, .advanced-btn:hover {
+            background: var(--button-hover);
+        }
+
+        .advanced-btn.danger:hover {
+            background-color: #cc4440; /* Tono más oscuro de peligro */
+        }
+        
+        .quick-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .quick-link {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .quick-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Animación 3D */
+        .animation-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .animation-container {
+            perspective: 1000px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .animated-object {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate 10s infinite linear;
+        }
+        
+        .face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .face img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+        
+        .front { transform: translateZ(100px); }
+        .back { transform: rotateY(180deg) translateZ(100px); }
+        .left { transform: rotateY(-90deg) translateZ(100px); }
+        .right { transform: rotateY(90deg) translateZ(100px); }
+        .top { transform: rotateX(90deg) translateZ(100px); }
+        .bottom { transform: rotateX(-90deg) translateZ(100px); }
+        
+        @keyframes rotate {
+            0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
+            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        }
+        
+        .advanced-info {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .tip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(26, 42, 108, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Estilos del botón de tema (circular) */
+        #theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--highlight-color); 
+            color: var(--button-color);         
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            
+            border-radius: 50% !important; 
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            line-height: 1; 
+            
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s; 
+        }
+
+        #theme-toggle:hover {
+            background: var(--button-hover);
+        }
+
+        /* Estilos de Cámara */
+        #camera-feed {
+            width: 100%;
+            max-height: 400px;
+            background: #000;
+            border-radius: 8px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .camera-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        /* Estilos de Controles del Navegador */
+        .browser-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .browser-controls .advanced-btn {
+            flex-grow: 1;
+            min-width: 100px;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background: var(--header-bg);
+            border-radius: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .heart {
+            color: #ff4d4d;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 768px) {
+            .info-section {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .animated-object {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .face {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .front { transform: translateZ(75px); }
+            .back { transform: rotateY(180deg) translateZ(75px); }
+            .left { transform: rotateY(-90deg) translateZ(75px); }
+            .right { transform: rotateY(90deg) translateZ(75px); }
+            .top { transform: rotateX(90deg) translateZ(75px); }
+            .bottom { transform: rotateX(-90deg) translateZ(75px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>¡Hola! Bienvenido a WebUser</h1>
+            <button id="theme-toggle" class="advanced-btn" title="Alternar Tema">
+                <i class="fas fa-sun"></i>
+            </button>
+        </header>
+        
+        <div class="info-section">
+            <div class="specs-card">
+                <h2>Tu navegador y sistema es:</h2>
+                <div class="specs-text" id="specs-text">
+                    </div>
+            </div>
+            
+            <div class="summary-card">
+                <h2>Resumen de tu dispositivo:</h2>
+                <div class="summary-content">
+                    <div class="summary-icons">
+                        <div class="icon-container" id="os-icon"></div>
+                        <div class="icon-container" id="browser-icon"></div>
+                    </div>
+                    <div class="summary-text">
+                        <p id="os-summary"></p>
+                        <p id="browser-summary"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sensors-card">
+                <h2>Sensores y Utilidades:</h2>
+                <div class="sensor-text">
+                    <p id="battery-info">Cargando información de la batería...</p>
+                    <hr style="margin: 10px 0; border-color: rgba(255,255,255,0.1);">
+                    <p id="network-info">Cargando estado de la red...</p>
+                    <hr style="margin: 10px 0; border-color: rgba(255,255,255,0.1);">
+                    <p id="memory-info">Cargando información de memoria...</p>
+                    <hr style="margin: 10px 0; border-color: rgba(255,255,255,0.1);">
+                    <p id="orientation-info">Sensores de orientación (mueve tu móvil)...</p>
+                    <div id="orientation-controls" style="text-align: center; margin-top: 15px;">
+                        <button id="activate-sensors-btn" class="advanced-btn" style="display: none;">
+                            <i class="fas fa-mobile-alt"></i> Activar Sensores
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="search-card">
+                <h2>BUSCA AQUÍ EN EL INTERNET</h2>
+                <div class="search-box">
+                    <input type="text" id="url-input" placeholder="Ingresa una URL (ej: google.com)" aria-label="Ingresar URL">
+                    <button id="redirect-btn" title="Ir a la URL ingresada">IR</button>
+                </div>
+                
+                <p>Páginas comunes si te da weba escribirlas xD</p>
+                <div class="quick-links">
+                    <a href="https://www.google.com" target="_blank" class="quick-link">
+                        <i class="fab fa-google"></i> Google
+                    </a>
+                    <a href="https://www.youtube.com" target="_blank" class="quick-link">
+                        <i class="fab fa-youtube"></i> YouTube
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+             <div class="browser-controls-card">
+                <h2>Controles de Navegador 🌐</h2>
+                <div class="browser-controls">
+                    <button id="nav-back-btn" class="advanced-btn" title="Navegar a la página anterior">
+                        <i class="fas fa-arrow-left"></i> Atrás
+                    </button>
+                    <button id="nav-forward-btn" class="advanced-btn" title="Navegar a la página siguiente">
+                        <i class="fas fa-arrow-right"></i> Adelante
+                    </button>
+                    <button id="nav-reload-btn" class="advanced-btn" title="Recargar esta página">
+                        <i class="fas fa-redo-alt"></i> Recargar
+                    </button>
+                    <button id="nav-fullscreen-btn" class="advanced-btn" title="Alternar modo de pantalla completa">
+                        <i class="fas fa-expand"></i> Pantalla Completa
+                    </button>
+                    <button id="nav-top-btn" class="advanced-btn" title="Ir al inicio de la página">
+                        <i class="fas fa-arrow-up"></i> Ir al Inicio
+                    </button>
+                    <button id="nav-close-btn" class="advanced-btn danger" title="Cerrar la pestaña o ventana actual (puede ser bloqueado)">
+                        <i class="fas fa-times-circle"></i> Cerrar Página
+                    </button>
+                </div>
+            </div>
+
+            <div class="camera-card">
+                <h2>Cámara Web de Prueba 🎥 (Requiere Permiso)</h2>
+                <video id="camera-feed" autoplay playsinline></video>
+                <div class="camera-controls">
+                    <button id="start-camera-btn" class="advanced-btn">
+                        <i class="fas fa-video"></i> Iniciar Cámara
+                    </button>
+                    <button id="stop-camera-btn" class="advanced-btn" style="display: none;">
+                        <i class="fas fa-video-slash"></i> Detener Cámara
+                    </button>
+                </div>
+                <p id="camera-status" style="text-align: center; margin-top: 10px;"></p>
+            </div>
+        </div>
+        
+        <div class="advanced-info">
+            <a href="https://www.whatismybrowser.com/" target="_blank" class="advanced-btn">
+                <i class="fas fa-info-circle"></i> Para información más avanzada visita: What is my browser
+            </a>
+            
+            <div class="tip">
+                <i class="fas fa-lightbulb"></i>
+                <p>Usa el botón de la esquina para alternar el tema y si estás en móvil, ¡mira cómo cambian los valores de orientación al moverlo!</p>
+            </div>
+        </div>
+        
+        <div class="animation-section">
+            <h2>Animación 3D de tu sistema</h2>
+            <div class="animation-container">
+                <div class="animated-object" id="animated-object">
+                    <div class="face front" id="front-face"></div>
+                    <div class="face back" id="back-face"></div>
+                    <div class="face left" id="left-face"></div>
+                    <div class="face right" id="right-face"></div>
+                    <div class="face top" id="top-face"></div>
+                    <div class="face bottom" id="bottom-face"></div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Por: <strong>joshuaPRO5</strong> <span class="heart">❤️</span></p>
+        </footer>
+    </div>
+
+    <script>
+        // --- 1. DETECCIÓN DE SISTEMA Y NAVEGADOR ---
+        const userAgent = navigator.userAgent.toLowerCase();
+        const platform = navigator.platform;
+        const language = navigator.language;
+        const vendor = navigator.vendor;
+        const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        
+        let os = "Desconocido";
+        let osIcon = "❓";
+        let osImage = "";
+        
+        if (/android/.test(userAgent)) {
+            os = "Android";
+            osIcon = "🤖";
+            osImage = "https://upload.wikimedia.org/wikipedia/commons/6/64/Android_logo_2019_%28stacked%29.svg";
+        } else if (/win/.test(platform)) {
+            os = "Windows";
+            osIcon = "🪟";
+            osImage = "https://upload.wikimedia.org/wikipedia/commons/5/5f/Windows_logo_-_2012.svg";
+        } else if (/mac/.test(platform) && !/iphone|ipad|ipod/.test(userAgent)) {
+            os = "macOS";
+            osIcon = "🍎";
+            osImage = "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg";
+        } else if (/iphone|ipad|ipod/.test(userAgent)) {
+            os = "iOS/iPadOS"; 
+            osIcon = "🍎";
+            osImage = "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg";
+        } else if (/linux/.test(platform) && !/android/.test(userAgent)) {
+            os = "Linux";
+            osIcon = "🐧";
+            osImage = "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg";
+        }
+        
+        let browser = "Desconocido";
+        let browserIcon = "❓";
+        
+        if (/edg/.test(userAgent)) {
+            browser = "Edge";
+            browserIcon = "🌐"; 
+        } else if (/opr|opera/.test(userAgent)) {
+            browser = "Opera";
+            browserIcon = "🎶"; 
+        } else if (/chrome/.test(userAgent) && !/edg|opr|opera/.test(userAgent)) {
+            browser = "Chrome";
+            browserIcon = "🌀";
+        } else if (/firefox/.test(userAgent)) {
+            browser = "Firefox";
+            browserIcon = "🦊";
+        } else if (/safari/.test(userAgent) && !/chrome/.test(userAgent)) {
+            browser = "Safari";
+            browserIcon = "🧭";
+        }
+
+        // Mostrar información detallada
+        document.getElementById('specs-text').innerHTML = `
+            <strong>User Agent:</strong> ${navigator.userAgent}<br>
+            <strong>Plataforma:</strong> ${platform}<br>
+            <strong>Idioma:</strong> ${language}<br>
+            <strong>Vendedor:</strong> ${vendor}<br>
+            <strong>Cookies habilitadas:</strong> ${navigator.cookieEnabled ? 'Sí' : 'No'}<br>
+            <strong>Preferencia de Tema:</strong> ${prefersDarkScheme ? 'Oscuro' : 'Claro'}<br>
+            <strong>Resolución de pantalla:</strong> ${screen.width}x${screen.height}<br>
+            <strong>Profundidad de color:</strong> ${screen.colorDepth} bits
+        `;
+        
+        // Mostrar resumen y configurar animación
+        document.getElementById('os-icon').innerHTML = osIcon;
+        document.getElementById('browser-icon').innerHTML = browserIcon;
+        document.getElementById('os-summary').innerHTML = `<strong>S.O.:</strong> ${os}`;
+        document.getElementById('browser-summary').innerHTML = `<strong>Navegador:</strong> ${browser}`;
+        
+        const faces = document.querySelectorAll('.face');
+        if (osImage) {
+            faces.forEach(face => {
+                face.innerHTML = ''; 
+                const img = document.createElement('img');
+                img.src = osImage;
+                img.alt = os;
+                face.appendChild(img);
+            });
+        } else {
+            faces.forEach(face => {
+                face.innerHTML = osIcon;
+                face.style.fontSize = '5rem';
+            });
+        }
+        
+        // --- 2. FUNCIONALIDADES AVANZADAS (SENSORES Y UTILIDADES) ---
+
+        // A. Detección de Memoria (RAM)
+        if ('deviceMemory' in navigator) {
+            const memory = navigator.deviceMemory; 
+            document.getElementById('memory-info').innerHTML = `
+                <strong>RAM Estimada:</strong> ${memory} GB
+            `;
+        } else {
+            document.getElementById('memory-info').innerHTML = 'Detección de RAM no soportada.';
+        }
+
+        // B. Indicador de Batería
+        function updateBatteryInfo(battery) {
+            const level = Math.round(battery.level * 100);
+            const isCharging = battery.charging ? 'Sí' : 'No';
+            let statusText = 'Desconocido';
+            
+            if (isCharging === 'Sí') {
+                statusText = '🔌 Cargando';
+            } else if (level === 100) {
+                statusText = '🔋 Cargada';
+            } else {
+                statusText = '🔋 Usando Batería';
+            }
+
+            document.getElementById('battery-info').innerHTML = `
+                <strong>Nivel de Batería:</strong> ${level}% (${statusText})
+            `;
+        }
+
+        if ('getBattery' in navigator) {
+            navigator.getBattery().then(battery => {
+                updateBatteryInfo(battery);
+                battery.addEventListener('levelchange', () => updateBatteryInfo(battery));
+                battery.addEventListener('chargingchange', () => updateBatteryInfo(battery));
+            });
+        } else {
+            document.getElementById('battery-info').innerHTML = 'La API de Batería no está soportada.';
+        }
+
+        // C. Estado de Conexión de Red
+        function updateNetworkStatus() {
+            const isOnline = navigator.onLine ? 'Conectado (Online) ✅' : 'Desconectado (Offline) ❌';
+            let connectionType = 'Desconocido';
+            
+            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            
+            if (connection) {
+                connectionType = connection.effectiveType || connection.type || 'N/A';
+            }
+            
+            document.getElementById('network-info').innerHTML = `
+                <strong>Estado:</strong> ${isOnline}<br>
+                <strong>Tipo de Red (Estimado):</strong> ${connectionType}
+            `;
+        }
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+        updateNetworkStatus();
+
+        // D. Detección de Sensores (Orientación) - Con manejo de permisos iOS 13+
+        const orientationInfo = document.getElementById('orientation-info');
+        const activateSensorsBtn = document.getElementById('activate-sensors-btn');
+        let orientationListenerActive = false;
+
+        function handleOrientation(event) {
+            const alpha = event.alpha ? event.alpha.toFixed(2) : 'N/A';
+            const beta = event.beta ? event.beta.toFixed(2) : 'N/A';
+            const gamma = event.gamma ? event.gamma.toFixed(2) : 'N/A';
+            
+            orientationInfo.innerHTML = `
+                <strong>Alpha (Z):</strong> ${alpha}° (Rotación)<br>
+                <strong>Beta (X):</strong> ${beta}° (Inclinación)<br>
+                <strong>Gamma (Y):</strong> ${gamma}° (De lado)
+            `;
+        }
+
+        function startOrientationTracking() {
+            if (!orientationListenerActive) {
+                window.addEventListener('deviceorientation', handleOrientation);
+                orientationListenerActive = true;
+                orientationInfo.innerHTML = 'Sensores activados. ¡Muévelo!';
+                activateSensorsBtn.style.display = 'none';
+            }
+        }
+
+        if ('DeviceOrientationEvent' in window) {
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                // Dispositivos iOS 13+ (requiere permiso)
+                orientationInfo.innerHTML = 'Pulsa el botón de abajo para activar los sensores.';
+                activateSensorsBtn.style.display = 'inline-flex';
+
+                activateSensorsBtn.addEventListener('click', function() {
+                    DeviceOrientationEvent.requestPermission()
+                        .then(permissionState => {
+                            if (permissionState === 'granted') {
+                                startOrientationTracking();
+                            } else {
+                                orientationInfo.innerHTML = 'Permiso de sensores denegado.';
+                            }
+                        })
+                        .catch(err => {
+                            orientationInfo.innerHTML = `Error: ${err.message}`;
+                            console.error("Error al solicitar permiso del sensor:", err);
+                        });
+                });
+            } else {
+                // Otros navegadores (no requieren permiso)
+                startOrientationTracking();
+            }
+        } else {
+            orientationInfo.innerHTML = 'Sensores de Orientación no soportados.';
+        }
+
+
+        // --- 3. MANEJO DE CÁMARA WEB ---
+        const video = document.getElementById('camera-feed');
+        const startBtn = document.getElementById('start-camera-btn');
+        const stopBtn = document.getElementById('stop-camera-btn');
+        const cameraStatus = document.getElementById('camera-status');
+        let currentStream = null;
+
+        startBtn.addEventListener('click', async () => {
+            if (currentStream) {
+                cameraStatus.textContent = 'La cámara ya está activa.';
+                return;
+            }
+            cameraStatus.textContent = 'Solicitando acceso a la cámara...';
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                currentStream = stream;
+                startBtn.style.display = 'none';
+                stopBtn.style.display = 'inline-flex';
+                cameraStatus.textContent = 'Cámara iniciada correctamente.';
+            } catch (err) {
+                cameraStatus.textContent = `Error al acceder a la cámara: ${err.name} - ${err.message}.`;
+                console.error("Error al acceder a la cámara:", err);
+            }
+        });
+
+        stopBtn.addEventListener('click', () => {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+                currentStream = null;
+                startBtn.style.display = 'inline-flex';
+                stopBtn.style.display = 'none';
+                cameraStatus.textContent = 'Cámara detenida.';
+            }
+        });
+
+        // --- 4. REDIRECCIONAMIENTO, TEMA Y CONTROLES DEL NAVEGADOR ---
+
+        // Redireccionador de URL
+        document.getElementById('redirect-btn').addEventListener('click', function() {
+            let url = document.getElementById('url-input').value.trim();
+            if (url) {
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = 'https://' + url;
+                }
+                window.open(url, '_blank');
+            } else {
+                alert('Por favor, ingresa una URL válida');
+            }
+        });
+        
+        document.getElementById('url-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('redirect-btn').click();
+            }
+        });
+
+        // Alternador de Tema (Modo Oscuro)
+        const themeToggle = document.getElementById('theme-toggle');
+        const savedTheme = localStorage.getItem('theme');
+        const sunIcon = '<i class="fas fa-sun"></i>';
+        const moonIcon = '<i class="fas fa-moon"></i>';
+
+        // Inicializar el tema al cargar
+        if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme)) {
+            document.body.classList.add('dark-mode');
+            themeToggle.innerHTML = moonIcon;
+        } else {
+            themeToggle.innerHTML = sunIcon;
+        }
+
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            
+            // Cambiar icono y guardar preferencia
+            if (document.body.classList.contains('dark-mode')) {
+                themeToggle.innerHTML = moonIcon;
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeToggle.innerHTML = sunIcon;
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // 🛠️ Implementación de Controles de Navegador
+        document.getElementById('nav-back-btn').addEventListener('click', () => {
+            window.history.back();
+        });
+
+        document.getElementById('nav-forward-btn').addEventListener('click', () => {
+            window.history.forward();
+        });
+
+        document.getElementById('nav-reload-btn').addEventListener('click', () => {
+            window.location.reload();
+        });
+
+        document.getElementById('nav-top-btn').addEventListener('click', () => {
+            window.location.href = '#top'; // Desplaza al inicio de la página (etiqueta <body>)
+        });
+
+        document.getElementById('nav-close-btn').addEventListener('click', () => {
+             // Solo funciona si la ventana/pestaña fue abierta por script
+            window.close();
+            // Mostrar una advertencia si no se puede cerrar
+            setTimeout(() => {
+                alert('⚠️ Advertencia: La función "Cerrar Página" solo funciona si esta pestaña fue abierta por un script. El navegador la ha bloqueado por seguridad.');
+            }, 100);
+        });
+
+        // Función para Pantalla Completa (Full Screen)
+        const fullscreenBtn = document.getElementById('nav-fullscreen-btn');
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                // Entrar en modo pantalla completa
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
+                    document.documentElement.msRequestFullscreen();
+                }
+                fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i> Normal';
+                fullscreenBtn.title = 'Salir de pantalla completa';
+            } else {
+                // Salir del modo pantalla completa
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) { /* Firefox */
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { /* IE/Edge */
+                    document.msExitFullscreen();
+                }
+                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i> Pantalla Completa';
+                fullscreenBtn.title = 'Alternar modo de pantalla completa';
+            }
+        });
+    </script>
+</body>
+</html>
